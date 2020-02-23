@@ -29,5 +29,5 @@ logging.metrics.enabled: false
 #----------------------------- Logstash output --------------------------------
 output.logstash:
   # The Logstash hosts
-  hosts: ["logstash:5000"]
+  hosts: ["logstash:5044"]
 
