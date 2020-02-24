@@ -3,7 +3,14 @@ filebeat.inputs:
 - type: container
   paths: 
     - '/var/lib/docker/containers/*/*.log'
-
+  fields:
+    type: docker_filebeat_log
+    # To set the environment use the field: environment
+    environment: production
+    #environment: no-production
+    # To set the environment use the field: location
+    location: Milan
+    
 processors:
 - add_docker_metadata:
     host: "unix:///var/run/docker.sock"
