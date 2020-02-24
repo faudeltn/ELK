@@ -8,7 +8,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - es1data:/usr/share/elasticsearch/data  
+      - els-data:/usr/share/elasticsearch/data  
     configs:
       - source: elastic_config
         target: /usr/share/elasticsearch/config/elasticsearch.yml
@@ -105,10 +105,18 @@ configs:
   filebeat_config:
     file: ./filebeat/config/filebeat.yml
 
+#volumes:
+#  es1data:
+#    driver: local
+
 volumes:
-  es1data:
+  els-data:
     driver: local
-    
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "/es1data"
+      
 networks:
   elk:
     driver: overlay
