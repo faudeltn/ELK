@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -28,7 +28,7 @@ services:
           - node.role == worker
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.5.1
+    image: docker.elastic.co/logstash/logstash:7.6.0
     ports:
       - "5044:5044"
       - "9600:9600"
@@ -49,7 +49,7 @@ services:
           - node.role == worker
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.5.1
+    image: docker.elastic.co/kibana/kibana:7.6.0
     ports:
       - "5601:5601"
     configs:
@@ -65,7 +65,7 @@ services:
           - node.role == worker
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat:7.5.1
+    image: docker.elastic.co/beats/filebeat:7.6.0
     user: root
     configs:
       - source: filebeat_config
