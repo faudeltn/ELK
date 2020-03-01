@@ -11,16 +11,30 @@ filebeat.inputs:
     # To set the environment use the field: location
     location: Milan
     
-processors:
-- add_docker_metadata:
-    host: "unix:///var/run/docker.sock"
+  processors:
+  - add_docker_metadata:
+      host: "unix:///var/run/docker.sock"
+  - decode_json_fields:
+      fields: ["message"]
+      target: "json"
+      overwrite_keys: true
 
-- decode_json_fields:
-    fields: ["message"]
-    target: "json"
-    overwrite_keys: true
-
-
+- type: docker
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths:
+  - '/var/log/messages'
+  json.message_key: log
+  json.keys_under_root: true
+  # Change to true to enable this prospector configuration.
+  enabled: true
+  encoding: utf-8
+  include_lines: ['dockerd']
+  fields:
+    type: messages_filebeat_log
+    # To set the environment use the field: environment
+    environment: production
+    # To set the environment use the field: location
+    location: Milan
 
 #================================ Outputs =====================================
 
