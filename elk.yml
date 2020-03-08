@@ -105,17 +105,13 @@ configs:
   filebeat_config:
     file: ./filebeat/config/filebeat.yml
 
-#volumes:
-#  es1data:
-#    driver: local
-
 volumes:
   els-data:
     driver: local
     driver_opts:
       type: "none"
       o: "bind"
-      device: "/es1data"
+      device: "/elastic-data"
       
 networks:
   elk:
