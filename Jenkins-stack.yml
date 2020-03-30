@@ -1,0 +1,37 @@
+version: '3.7'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    environment:
+      - JAVA_OPTS=-Dhudson.footerURL=http://mycompany.com
+      - JENKINS_USERNAME=admin
+      - JENKINS_PASSWORD=Lotfi
+    ports:
+      - '80:8080'
+      - '443:8443'
+      - '50000:50000'
+    volumes:
+      - jenkins_data:/var/jenkins_home
+    networks:
+      - jenkins-net  
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - node.role == worker  
+
+volumes:
+  jenkins_data:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "/jenkinsdata"
+
+networks:
+  jenkins-net:
+    driver: overlay
+
+#https://stackoverflow.com/questions/44727535/jenkins-docker-set-admin-password-from-environment-variable
+# https://github.com/bryantson/CICDPractice/blob/master/Jenkinsfile
