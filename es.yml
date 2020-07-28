@@ -88,7 +88,7 @@ spec:
             value: "1"
           - name: "ES_JAVA_OPTS"
             value: "-Xms1024m -Xmx1024m" 
-          - namr: XPACK_SECURITY_ENABLED
+          - name: XPACK_SECURITY_ENABLED
             value: "true"
           - name: ELASTIC_PASSWORD
             valueFrom:
