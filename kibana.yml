@@ -30,10 +30,29 @@ spec:
           - name: ELASTICSEARCH_HOSTS
             # 由于在同一个命名空间内，所以可以直接通过服务名 elasticsearch 访问到 Elasticsearch
             value: http://elasticsearch:9200
+          - name: ELASTICSEARCH_USER
+            value: "elastic"
+          - name: ELASTICSEARCH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-pw-elastic
+                key: password
         ports:
         - containerPort: 5601
           name: ui
           protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/kibana/config/kibana.yml
+          readOnly: true
+          subPath: kibana.yml
+        
+      volumes:
+      - name: config
+        configMap:
+          name: kibana-config
+          
+          
 ---
 # kibana-service.yaml
 apiVersion: v1
@@ -49,6 +68,6 @@ spec:
   - port: 5601
     protocol: TCP
     targetPort: ui
-    nodePort: 35601
+    nodePort: 30561
   selector:
     app: kibana
