@@ -86,16 +86,15 @@ spec:
           # https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/es-image/elasticsearch_logging_discovery.go            
           - name: MINIMUM_MASTER_NODES
             value: "1"
-          - name: "ES_JAVA_OPTS"
-            value: "-Xms1024m -Xmx1024m" 
-          - name: XPACK_SECURITY_ENABLED
-            value: "true"
+          #- name: "ES_JAVA_OPTS"
+          #  value: "-Xms1024m -Xmx1024m" 
+          #- name: XPACK_SECURITY_ENABLED
+          #  value: "true"
           - name: ELASTIC_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: elasticsearch-pw-elastic
                 key: password
-
         ports:
         - containerPort: 9200
           name: db
@@ -106,12 +105,19 @@ spec:
         volumeMounts:
         - name: elasticsearch
           mountPath: /data
+        - name: config
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          readOnly: true
+          subPath: elasticsearch.yml  
       volumes:
       - name: elasticsearch
         emptyDir: {}
         # PVC 
         #persistentVolumeClaim:
         #  claimName: elasticsearch-pvc
+      - name: config
+        configMap:
+          name: elasticsearch-config  
 
 ---
 # es-service.yaml
