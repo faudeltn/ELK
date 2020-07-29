@@ -1,13 +1,30 @@
-# kibana-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
+# kibana.service.yaml
+---
+apiVersion: v1
+kind: Service
 metadata:
-  name: kibana
   namespace: logging
+  name: kibana
   labels:
     app: kibana
 spec:
-  replicas: 1
+  type: NodePort
+  ports:
+  - port: 5601
+    name: webinterface
+  selector:
+    app: kibana
+
+# kibana.deployment.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: logging
+  name: kibana
+  labels:
+    app: kibana
+spec:
   selector:
     matchLabels:
       app: kibana
@@ -19,55 +36,25 @@ spec:
       containers:
       - name: kibana
         image: docker.elastic.co/kibana/kibana:7.8.0
-        resources:
-          limits:
-            memory: "256Mi"
-            cpu: 500m
-          requests:
-            memory: "128Mi"
-            cpu: 100m
-        env:
-          - name: ELASTICSEARCH_HOSTS
-            # 由于在同一个命名空间内，所以可以直接通过服务名 elasticsearch 访问到 Elasticsearch
-            value: http://elasticsearch:9200
-          - name: ELASTICSEARCH_USER
-            value: "elastic"
-          - name: ELASTICSEARCH_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: elasticsearch-pw-elastic
-                key: password
         ports:
         - containerPort: 5601
-          name: ui
-          protocol: TCP
+          name: webinterface
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://elasticsearch-client.elastic.svc.cluster.local:9200"
+        - name: ELASTICSEARCH_USER
+          value: "elastic"
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-pw-elastic
+              key: password
         volumeMounts:
         - name: config
           mountPath: /usr/share/kibana/config/kibana.yml
           readOnly: true
           subPath: kibana.yml
-        
       volumes:
       - name: config
         configMap:
           name: kibana-config
-          
-          
----
-# kibana-service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kibana
-  namespace: logging
-  labels:
-    app: kibana
-spec:
-  type: NodePort
-  ports:
-  - port: 5601
-    protocol: TCP
-    targetPort: ui
-    nodePort: 30561
-  selector:
-    app: kibana
