@@ -12,9 +12,9 @@ data:
     server.host: 0.0.0.0
 
     elasticsearch:
-      hosts: ${ELASTICSEARCH_HOSTS}
-      username: ${ELASTICSEARCH_USER}
-      password: ${ELASTICSEARCH_PASSWORD}
+      hosts: [ "http://elasticsearch:9200" ]
+      username: elastic
+      password: Password
       #hosts: ${ELASTICSEARCH_HOSTS}
       #username: ${ELASTICSEARCH_USER}
       #password: ${ELASTICSEARCH_PASSWORD}
